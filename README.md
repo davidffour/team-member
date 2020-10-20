@@ -365,23 +365,24 @@ public interface PointService {
     }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 포인트 시스템이 장애가 나면 포인트 소멸도 못받는다는 것을 확인:
 
 
 ```
-# 결제 (pay) 서비스를 잠시 내려놓음 (ctrl+c)
+# 포인트 (point) 서비스를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Fail
-http localhost:8081/orders item=피자 storeId=2   #Fail
+#탈퇴처리
+http DELETE http://localhost:8081/members/1   #Fail
+http DELETE http://localhost:8081/members/2   #Fail
 
-#결제서비스 재기동
-cd 결제
+
+#포인트서비스 재기동
+cd point
 mvn spring-boot:run
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
+#탈퇴처리
+http DELETE http://localhost:8081/members/1   #Success
+http DELETE http://localhost:8081/members/2   #Success
 ```
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)

@@ -207,36 +207,67 @@ http localhost:8081/orders/1
 
 ## 폴리글랏 퍼시스턴스
 
-앱프런트 (app) 는 서비스 특성상 많은 사용자의 유입과 상품 정보의 다양한 콘텐츠를 저장해야 하는 특징으로 인해 RDB 보다는 Document DB / NoSQL 계열의 데이터베이스인 Mongo DB 를 사용하기로 하였다. 이를 위해 order 의 선언에는 @Entity 가 아닌 @Document 로 마킹되었으며, 별다른 작업없이 기존의 Entity Pattern 과 Repository Pattern 적용과 데이터베이스 제품의 설정 (application.yml) 만으로 MongoDB 에 부착시켰다
+서비스 개발과 운영자들에게 익숙한 언어인 SQL을 사용하면서, 무료로 사용 가능한 RDB인 maria DB를 사용하기로 하였다. 
+이를 위해 aws의 RDS로 mariaDB를 생성하였고, application.yml 파일과 pom.xml에 maria DB관련 코드를 추가하였다.
 
 ```
-# Order.java
+# Message.java
 
-package fooddelivery;
+package mileage;
 
 @Document
-public class Order {
+public class Message {
 
-    private String id; // mongo db 적용시엔 id 는 고정값으로 key가 자동 발급되는 필드기 때문에 @Id 나 @GeneratedValue 를 주지 않아도 된다.
-    private String item;
-    private Integer 수량;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY) // mariadb를 사용하여 db에서 auto_increment 속성을 사용하여 GenerationType.IDENTITY으로 설정
+    private Long id;
+    private Long memberId;
+    private String phoneNo;
+    private String messageContents;
+    private String messageStatus;
 
 }
 
 
-# 주문Repository.java
-package fooddelivery;
+# MessageRepository.java
+package mileage;
 
-public interface 주문Repository extends JpaRepository<Order, UUID>{
+public interface MessageRepository extends PagingAndSortingRepository<Message, Long>{
+    Optional<Message> findByMemberId(Long memberId);
 }
 
 # application.yml
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: id
+    password: password
+    url: jdbc:mariadb://localhost:3306/test 
 
-  data:
-    mongodb:
-      host: mongodb.default.svc.cluster.local
-    database: mongo-example
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
+# pom.xml
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
+    
 ```
 
 ## 폴리글랏 프로그래밍

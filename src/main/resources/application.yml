@@ -69,4 +69,4 @@ spring:
           contentType: application/json
 api:
   point:
-    url: http://localhost:8083
+    url: http://point:8080

@@ -59,7 +59,7 @@
 
 ## Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과
-![image](https://user-images.githubusercontent.com/73006747/96578751-ad21a580-1310-11eb-8efd-d79c2111eef8.png)
+![image](https://user-images.githubusercontent.com/73006747/96578872-dfcb9e00-1310-11eb-9f23-35cabe3d01c1.png)
 
 ### 이벤트 도출
 ![image](https://user-images.githubusercontent.com/487999/79683604-47bc0180-8266-11ea-9212-7e88c9bf9911.png)

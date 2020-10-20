@@ -89,7 +89,7 @@
 
 ### 완성된 1차 모형
 
-[image](https://user-images.githubusercontent.com/73006747/96579439-d1ca4d00-1311-11eb-8b31-834b426ffedb.png)
+![image](https://user-images.githubusercontent.com/73006747/96579532-fa524700-1311-11eb-8129-5c68f58ae595.png)
 
 
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증

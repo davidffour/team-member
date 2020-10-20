@@ -20,8 +20,9 @@ public class Member {
     public void onPostPersist(){
         MemberJoined memberJoined = new MemberJoined();
         BeanUtils.copyProperties(this, memberJoined);
-        memberJoined.publishAfterCommit();
 
+        memberJoined.setMemberStatus("READY");
+        memberJoined.publishAfterCommit();
 
     }
 
@@ -30,25 +31,24 @@ public class Member {
         MemberStatusChanged memberStatusChanged = new MemberStatusChanged();
         BeanUtils.copyProperties(this, memberStatusChanged);
         memberStatusChanged.publishAfterCommit();
-
-
     }
 
     @PreRemove
     public void onPreRemove(){
         MemberWithdrawn memberWithdrawn = new MemberWithdrawn();
         BeanUtils.copyProperties(this, memberWithdrawn);
+        memberWithdrawn.setMemberStatus("WITHDRAWAL");
         memberWithdrawn.publishAfterCommit();
 
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-
         mileage.external.Point point = new mileage.external.Point();
         // mappings goes here
-        MemberApplication.applicationContext.getBean(mileage.external.PointService.class)
-            .forfeit(point);
 
+        point.setMemberId(this.getMemberId());
+        point.setMemberStatus("WITHDRAWAL");
 
+        MemberApplication.applicationContext.getBean(mileage.external.PointService.class).forfeit(point);
     }
 
 

@@ -6,6 +6,15 @@ public class Point {
     private Long memberId;
     private Long remainPoint;
     private String memberStatus;
+    private Long requirePoint;
+
+    public Long getRequirePoint() {
+        return requirePoint;
+    }
+
+    public void setRequirePoint(Long requirePoint) {
+        this.requirePoint = requirePoint;
+    }
 
     public Long getId() {
         return id;

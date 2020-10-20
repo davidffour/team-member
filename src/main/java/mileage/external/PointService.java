@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Date;
 
-@FeignClient(name="point", url="http://point:8080")
+@FeignClient(name="point", url="${api.point.url}")
 public interface PointService {
 
-    @RequestMapping(method= RequestMethod.PATCH, path="/points")
+    @RequestMapping(method= RequestMethod.DELETE, path="/points/1")
     public void forfeit(@RequestBody Point point);
 
 }

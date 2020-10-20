@@ -24,6 +24,11 @@ public class Member {
         memberJoined.setMemberStatus("READY");
         memberJoined.publishAfterCommit();
 
+        mileage.external.Forfeiture forfeiture = new mileage.external.Forfeiture();
+        forfeiture.setId(this.getMemberId());
+        forfeiture.setRemainPoint(0L);
+        MemberApplication.applicationContext.getBean(mileage.external.ForfeitureService.class).forfeitHstInsert(forfeiture);
+
     }
 
     @PostUpdate
@@ -49,6 +54,7 @@ public class Member {
         point.setMemberStatus("WITHDRAWAL");
 
         MemberApplication.applicationContext.getBean(mileage.external.PointService.class).forfeit(point, id);
+
     }
 
 

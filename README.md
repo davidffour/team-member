@@ -184,23 +184,26 @@ public class 결제이력 {
 ```
 - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
 ```
-package fooddelivery;
+package mileage;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
+import java.util.Optional;
 
-public interface 결제이력Repository extends PagingAndSortingRepository<결제이력, Long>{
+public interface MessageRepository extends PagingAndSortingRepository<Message, Long>{
+    Optional<Message> findByMemberId(Long memberId);
+
 }
 ```
 - 적용 후 REST API 의 테스트
 ```
-# app 서비스의 주문처리
-http localhost:8081/orders item="통닭"
+# member 신규 가입
+http POST http://localhost:8081/members phoneNo=01012341234 nickname=TEST memberStatus=READY memberId=99
 
-# store 서비스의 배달처리
-http localhost:8083/주문처리s orderId=1
+# member 회원 탈퇴처리
+http DELETE http://localhost:8081/members/2
 
-# 주문 상태 확인
-http localhost:8081/orders/1
+# point 정보 확인
+http GET http://localhost:8083/points/1 
 
 ```
 

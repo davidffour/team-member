@@ -25,8 +25,11 @@ public class Member {
         memberJoined.publishAfterCommit();
 
         mileage.external.Forfeiture forfeiture = new mileage.external.Forfeiture();
-        forfeiture.setId(this.getMemberId());
+        forfeiture.setId(memberId);
         forfeiture.setRemainPoint(0L);
+
+        System.out.println(forfeiture.getMemberId());
+
         MemberApplication.applicationContext.getBean(mileage.external.ForfeitureService.class).forfeitHstInsert(forfeiture);
 
     }

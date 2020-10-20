@@ -62,9 +62,11 @@
 ![image](https://user-images.githubusercontent.com/73006747/96578872-dfcb9e00-1310-11eb-9f23-35cabe3d01c1.png)
 
 ### 이벤트 도출
+
 ![image](https://user-images.githubusercontent.com/73006747/96578956-04277a80-1311-11eb-8f2a-edf946aafbe7.png)
 
 ### 부적격 이벤트 탈락
+
 ![image](https://user-images.githubusercontent.com/73006747/96579007-16a1b400-1311-11eb-9d89-b556db3164fd.png)
 
     -과정 중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함 
@@ -74,57 +76,37 @@
 
 
 ### 액터, 커맨드 부착하여 읽기 좋게
+
 ![image](https://user-images.githubusercontent.com/73006747/96579141-54064180-1311-11eb-9122-e48e36fc91ec.png)
 
+
 ### 어그리게잇으로 묶기
+
 ![image](https://user-images.githubusercontent.com/73006747/96579185-641e2100-1311-11eb-8ea8-95504c9f0152.png)
+
 
 ### 바운디드 컨텍스트로 묶기
 
 ![image](https://user-images.githubusercontent.com/73006747/96579272-8b74ee00-1311-11eb-8ac3-030f4cbc7fe1.png)
 
+
 ### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
 
 ![image](https://user-images.githubusercontent.com/73006747/96579391-bd865000-1311-11eb-9d6f-69ca157f0ce4.png)
+
 
 ### 완성된 1차 모형
 
 ![image](https://user-images.githubusercontent.com/73006747/96579532-fa524700-1311-11eb-8129-5c68f58ae595.png)
 
 
-### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
+### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증 및 수정
 
-![image](https://user-images.githubusercontent.com/487999/79684167-3ecd2f00-826a-11ea-806a-957362d197e3.png)
+![image](https://user-images.githubusercontent.com/73006747/96579965-8ebca980-1312-11eb-98f5-a9f17b5c8828.png)
 
-    - 고객이 메뉴를 선택하여 주문한다 (ok)
-    - 고객이 결제한다 (ok)
-    - 주문이 되면 주문 내역이 입점상점주인에게 전달된다 (ok)
-    - 상점주인이 확인하여 요리해서 배달 출발한다 (ok)
-
-![image](https://user-images.githubusercontent.com/487999/79684170-47256a00-826a-11ea-9777-e16fafff519a.png)
-    - 고객이 주문을 취소할 수 있다 (ok)
-    - 주문이 취소되면 배달이 취소된다 (ok)
-    - 고객이 주문상태를 중간중간 조회한다 (View-green sticker 의 추가로 ok) 
-    - 주문상태가 바뀔 때 마다 카톡으로 알림을 보낸다 (?)
-
-
-### 모델 수정
-
-![image](https://user-images.githubusercontent.com/487999/79684176-4e4c7800-826a-11ea-8deb-b7b053e5d7c6.png)
+    - 시나리오 중 
+      회원은 포인트를 적립/사용이 가능하며, 잔여포인트가 관리된다. 이때, 회원상태가 정상인 경우만 적립/사용이 가능하다. ( 누락) → 변경 필요
     
-    - 수정된 모델은 모든 요구사항을 커버함.
-
-### 비기능 요구사항에 대한 검증
-
-![image](https://user-images.githubusercontent.com/487999/79684184-5c9a9400-826a-11ea-8d87-2ed1e44f4562.png)
-
-    - 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리
-        - 고객 주문시 결제처리:  결제가 완료되지 않은 주문은 절대 받지 않는다는 경영자의 오랜 신념(?) 에 따라, ACID 트랜잭션 적용. 주문와료시 결제처리에 대해서는 Request-Response 방식 처리
-        - 결제 완료시 점주연결 및 배송처리:  App(front) 에서 Store 마이크로서비스로 주문요청이 전달되는 과정에 있어서 Store 마이크로 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함.
-        - 나머지 모든 inter-microservice 트랜잭션: 주문상태, 배달상태 등 모든 이벤트에 대해 카톡을 처리하는 등, 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, Eventual Consistency 를 기본으로 채택함.
-
-
-
 
 ## 헥사고날 아키텍처 다이어그램 도출
     

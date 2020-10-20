@@ -48,7 +48,7 @@ public class Member {
         point.setMemberId(this.getMemberId());
         point.setMemberStatus("WITHDRAWAL");
 
-        MemberApplication.applicationContext.getBean(mileage.external.PointService.class).forfeit(point);
+        MemberApplication.applicationContext.getBean(mileage.external.PointService.class).forfeit(point, id);
     }
 
 

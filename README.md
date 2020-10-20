@@ -432,6 +432,23 @@ public class PolicyHandler{
     
         if (memberJoined.isMe() && Objects.equals(memberJoined.getMemberStatus(), "READY")) {
             
+            System.out.println("##### listener SendMsg : " + memberJoined.toJson());
+            // 회원 가입 정보를 받았으니, 메시지 전송을 슬슬 시작해야지..
+        }
+    }    
+    
+
+}
+
+```
+실제 구현을 하자면, 회원가입 노티를 받고, 메시지 전송 후 정상 여부를 전달할테니, 우선 회원가입 정보를 DB에 받아놓은 후, 이후 처리는 해당 Aggregate 내에서 하면 되겠다.:
+  
+```
+  @Autowired MessageRepository messageRepository;  
+  
+  @StreamListener(KafkaProcessor.INPUT)
+    public void wheneverMemberJoined_SendMsg(@Payload MemberJoined memberJoined) {
+        if (memberJoined.isMe() && Objects.equals(memberJoined.getMemberStatus(), "READY")) {
             Message message = new Message();
 
             message.setMemberId(memberJoined.getMemberId());
@@ -441,48 +458,27 @@ public class PolicyHandler{
 
             messageRepository.save(message);
         }
-    }    
-    
-
-}
-
-```
-실제 구현을 하자면, 카톡 등으로 점주는 노티를 받고, 요리를 마친후, 주문 상태를 UI에 입력할테니, 우선 주문정보를 DB에 받아놓은 후, 이후 처리는 해당 Aggregate 내에서 하면 되겠다.:
-  
-```
-  @Autowired 주문관리Repository 주문관리Repository;
-  
-  @StreamListener(KafkaProcessor.INPUT)
-  public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
-
-      if(결제승인됨.isMe()){
-          카톡전송(" 주문이 왔어요! : " + 결제승인됨.toString(), 주문.getStoreId());
-
-          주문관리 주문 = new 주문관리();
-          주문.setId(결제승인됨.getOrderId());
-          주문관리Repository.save(주문);
-      }
-  }
+    }
 
 ```
 
-상점 시스템은 주문/결제와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 상점시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다:
+메시지 시스템은 회원가입과 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 메시지 시스템이 유지보수로 인해 잠시 내려간 상태라도 회원가입을 받는데 문제가 없다:
 ```
-# 상점 서비스 (store) 를 잠시 내려놓음 (ctrl+c)
+# 메시지 서비스 (message)를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
+#회원가입 처리
+http POST http://localhost:8081/members phoneNo=01012341234 nickname=TEST memberStatus=READY memberId=99   #Success
+http POST http://localhost:8081/members phoneNo=01056785678 nickname=TEST1 memberStatus=READY memberId=100 #Success
 
-#주문상태 확인
-http localhost:8080/orders     # 주문상태 안바뀜 확인
+#회원가입 상태 확인
+http http://localhost:8081/members     # 회원 상태 안바뀜 확인
 
-#상점 서비스 기동
-cd 상점
+#메시지 서비스 기동
+cd message
 mvn spring-boot:run
 
-#주문상태 확인
-http localhost:8080/orders     # 모든 주문의 상태가 "배송됨"으로 확인
+#회원가입 상태 확인
+http http://localhost:8081/members     # 회원의 상태가 "NORMAL"로 확인
 ```
 
 

@@ -62,13 +62,16 @@
 ![image](https://user-images.githubusercontent.com/73006747/96578872-dfcb9e00-1310-11eb-9f23-35cabe3d01c1.png)
 
 ### 이벤트 도출
-![image](https://user-images.githubusercontent.com/487999/79683604-47bc0180-8266-11ea-9212-7e88c9bf9911.png)
+![image](https://user-images.githubusercontent.com/73006747/96578956-04277a80-1311-11eb-8f2a-edf946aafbe7.png)
 
 ### 부적격 이벤트 탈락
-![image](https://user-images.githubusercontent.com/487999/79683612-4b4f8880-8266-11ea-9519-7e084524a462.png)
+![image](https://user-images.githubusercontent.com/73006747/96579007-16a1b400-1311-11eb-9d89-b556db3164fd.png)
 
-    - 과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
-        - 주문시>메뉴카테고리선택됨, 주문시>메뉴검색됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
+    -과정 중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함 
+      - 회원>회원정보 변경됨 : 회원상태 변경에 대한 시나리오가 분리되어 있고, 회원정보 변경에 대한 업무가 별도 존재하지 않아 제외
+      - 포인트 > 잔여포인트가 변경됨 : 포인트 적립/사용 이벤트 시 잔여포인트가 변경됨으로 제외
+      - 회원 가입 >회원 가입 메뉴 선택됨 : UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외 
+
 
 ### 액터, 커맨드 부착하여 읽기 좋게
 ![image](https://user-images.githubusercontent.com/487999/79683614-4ee30f80-8266-11ea-9a50-68cdff2dcc46.png)

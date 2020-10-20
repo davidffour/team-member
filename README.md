@@ -1,17 +1,12 @@
 # member
 
-![image](https://user-images.githubusercontent.com/487999/79708354-29074a80-82fa-11ea-80df-0db3962fb453.png)
+# Mileage 시스템
 
-# 예제 - 음식배달
-
-본 예제는 MSA/DDD/Event Storming/EDA 를 포괄하는 분석/설계/구현/운영 전단계를 커버하도록 구성한 예제입니다.
-이는 클라우드 네이티브 애플리케이션의 개발에 요구되는 체크포인트들을 통과하기 위한 예시 답안을 포함합니다.
-- 체크포인트 : https://workflowy.com/s/assessment-check-po/T5YrzcMewfo4J6LW
-
+핸드폰번호로 간단히 회원 가입하여 포인트를 적립/사용할 수 있는 멤버십 마일리지 시스템
 
 # Table of contents
 
-- [예제 - 음식배달](#---)
+- [Mileage 시스템](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [체크포인트](#체크포인트)
   - [분석/설계](#분석설계)
@@ -29,8 +24,6 @@
   - [신규 개발 조직의 추가](#신규-개발-조직의-추가)
 
 # 서비스 시나리오
-
-배달의 민족 커버하기 - https://1sung.tistory.com/106
 
 기능적 요구사항
 1. 고객이 메뉴를 선택하여 주문한다

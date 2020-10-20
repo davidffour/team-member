@@ -393,31 +393,34 @@ http DELETE http://localhost:8081/members/2   #Success
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
 
 
-결제가 이루어진 후에 상점시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 상점 시스템의 처리를 위하여 결제주문이 블로킹 되지 않아도록 처리한다.
+회원가입이 이루어진 후에 메시지시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 메시지 시스템의 처리를 위하여 회원가입이 블로킹 되지 않도록 처리한다.
  
-- 이를 위하여 결제이력에 기록을 남긴 후에 곧바로 결제승인이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 이를 위하여 회원가입 기록을 남긴 후에 곧바로 회원가입이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
-package fooddelivery;
+package mileage;
 
 @Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
+@Table(name="Member_table")
+public class Member {
 
  ...
-    @PrePersist
-    public void onPrePersist(){
-        결제승인됨 결제승인됨 = new 결제승인됨();
-        BeanUtils.copyProperties(this, 결제승인됨);
-        결제승인됨.publish();
+    @PostPersist
+    public void onPostPersist(){
+        MemberJoined memberJoined = new MemberJoined();
+        BeanUtils.copyProperties(this, memberJoined);
+
+        memberJoined.setMemberStatus("READY");
+        memberJoined.publishAfterCommit();
+
     }
 
 }
 ```
-- 상점 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 메시지 서비스에서는 회원가입 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
 
 ```
-package fooddelivery;
+package mileage;
 
 ...
 
@@ -425,14 +428,21 @@ package fooddelivery;
 public class PolicyHandler{
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
-
-        if(결제승인됨.isMe()){
-            System.out.println("##### listener 주문정보받음 : " + 결제승인됨.toJson());
-            // 주문 정보를 받았으니, 요리를 슬슬 시작해야지..
+    public void wheneverMemberJoined_SendMsg(@Payload MemberJoined memberJoined) {
+    
+        if (memberJoined.isMe() && Objects.equals(memberJoined.getMemberStatus(), "READY")) {
             
+            Message message = new Message();
+
+            message.setMemberId(memberJoined.getMemberId());
+            message.setPhoneNo(memberJoined.getPhoneNo());
+            message.setMessageContents("CONTENTS");
+            message.setMessageStatus("READY");
+
+            messageRepository.save(message);
         }
-    }
+    }    
+    
 
 }
 

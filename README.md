@@ -767,3 +767,43 @@ Concurrency:		       96.02
 배포기간 동안 Availability 가 변화없기 때문에 무정지 재배포가 성공한 것으로 확인됨.
 
 # 시나리오 수행 결과
+
+1. AWS 서비스 기동 확인
+
+```
+root@labs--132893260:~# kubectl get all -n tutorial
+NAME                           READY   STATUS    RESTARTS   AGE
+pod/gateway-86bfd79f75-mkngm   1/1     Running   0          4m48s
+pod/member-c97fdd6f8-m9dsm     1/1     Running   0          4m31s
+pod/message-78f9b8bf45-lhjzx   1/1     Running   0          5m2s
+pod/mypage-7bf8c8c586-wvmp9    1/1     Running   0          3m57s
+pod/point-fb9dc86d4-62jtw      1/1     Running   0          4m11s
+pod/siege-5c7c46b788-gvdzr     1/1     Running   0          157m
+
+NAME              TYPE           CLUSTER-IP      EXTERNAL-IP                                                                    PORT(S)          AGE
+service/gateway   LoadBalancer   10.100.43.212   a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com   8080:31637/TCP   4m40s
+service/member    ClusterIP      10.100.187.38   <none>                                                                         8080/TCP         4m24s
+service/message   ClusterIP      10.100.145.5    <none>                                                                         8080/TCP         4m54s
+service/mypage    ClusterIP      10.100.120.78   <none>                                                                         8080/TCP         3m50s
+service/point     ClusterIP      10.100.77.33    <none>                                                                         8080/TCP         4m6s
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/gateway   1/1     1            1           4m48s
+deployment.apps/member    1/1     1            1           4m31s
+deployment.apps/message   1/1     1            1           5m2s
+deployment.apps/mypage    1/1     1            1           3m57s
+deployment.apps/point     1/1     1            1           4m11s
+deployment.apps/siege     1/1     1            1           157m
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/gateway-86bfd79f75   1         1         1       4m48s
+replicaset.apps/member-c97fdd6f8     1         1         1       4m31s
+replicaset.apps/message-78f9b8bf45   1         1         1       5m2s
+replicaset.apps/mypage-7bf8c8c586    1         1         1       3m57s
+replicaset.apps/point-fb9dc86d4      1         1         1       4m11s
+replicaset.apps/siege-5c7c46b788     1         1         1       157m
+
+
+```
+
+

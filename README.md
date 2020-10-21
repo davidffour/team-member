@@ -604,6 +604,9 @@ HTTP/1.1 201     2.19 secs:     268 bytes ==> POST http://localhost:8080/members
 ```
 kubectl autoscale deploy point --min=1 --max=10 --cpu-percent=4
 ```
+
+
+
 - CB 에서 했던 방식대로 워크로드를 걸어준다.
 ```
 $ siege -c3 -t10S -r10 --content-type "application/json" 'http://localhost:8080/members POST {"memberStatus": "READY"}',{"phoneNo": "01000000000"}',{"nickname": "A"}'
@@ -612,14 +615,10 @@ $ siege -c3 -t10S -r10 --content-type "application/json" 'http://localhost:8080/
 ```
 kubectl get deploy point -w -n tutorial
 ```
-- 어느정도 시간이 흐른 후 (약 30초) 스케일 아웃이 벌어지는 것을 확인할 수 있다:
-```
-NAME    DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-pay     1         1         1            1           17s
-pay     1         2         1            1           45s
-pay     1         4         1            1           1m
-:
-```
+- 어느정도 시간이 흐른 후 스케일 아웃이 벌어지는 것을 확인할 수 있다:
+
+![image](https://user-images.githubusercontent.com/73006747/96671955-08e64000-139e-11eb-905d-6232daccfaab.png)
+
 - siege 의 로그를 보아도 전체적인 성공률이 높아진 것을 확인 할 수 있다. 
 ```
 Transactions:		        5078 hits

@@ -52,45 +52,23 @@
 
 ### 이벤트 도출
 
-![image](https://user-images.githubusercontent.com/73006747/96578956-04277a80-1311-11eb-8f2a-edf946aafbe7.png)
+![이벤트2](https://user-images.githubusercontent.com/70302879/96742411-d66c2f80-13fd-11eb-983c-cffdec288302.jpg)
+
 
 ### 부적격 이벤트 탈락
 
-![image](https://user-images.githubusercontent.com/73006747/96579007-16a1b400-1311-11eb-9d89-b556db3164fd.png)
+![이벤트3](https://user-images.githubusercontent.com/70302879/96742413-d79d5c80-13fd-11eb-8e5f-a491d0d5addf.jpg)
+
 
     -과정 중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함 
       - 회원>회원정보 변경됨 : 회원상태 변경에 대한 시나리오가 분리되어 있고, 회원정보 변경에 대한 업무가 별도 존재하지 않아 제외
       - 회원 가입 >회원 가입 메뉴 선택됨 : UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외 
 
 
-### 액터, 커맨드 부착하여 읽기 좋게
-
-![image](https://user-images.githubusercontent.com/73006747/96579141-54064180-1311-11eb-9122-e48e36fc91ec.png)
-
-
-### 어그리게잇으로 묶기
-
-![image](https://user-images.githubusercontent.com/73006747/96579185-641e2100-1311-11eb-8ea8-95504c9f0152.png)
-
-
-### 바운디드 컨텍스트로 묶기
-
-![image](https://user-images.githubusercontent.com/73006747/96579272-8b74ee00-1311-11eb-8ac3-030f4cbc7fe1.png)
-
-
-### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
-
-![image](https://user-images.githubusercontent.com/73006747/96579391-bd865000-1311-11eb-9d6f-69ca157f0ce4.png)
-
-
-### 완성된 1차 모형
-
-![image](https://user-images.githubusercontent.com/73006747/96579532-fa524700-1311-11eb-8129-5c68f58ae595.png)
-
-
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증 및 수정
 
-![image](https://user-images.githubusercontent.com/73006747/96579965-8ebca980-1312-11eb-98f5-a9f17b5c8828.png)
+![이벤트4](https://user-images.githubusercontent.com/70302879/96742416-d835f300-13fd-11eb-986b-e5d692c3cf07.jpg)
+
 
     - 시나리오 중 
       회원은 포인트를 적립/사용이 가능하며, 잔여포인트가 관리된다. 이때, 회원상태가 정상인 경우만 적립/사용이 가능하다. (기능 누락) 
@@ -98,7 +76,7 @@
       
 ## Event Storming 결과
 * MSAEz 로 모델링한 이벤트스토밍 결과
-![image](https://user-images.githubusercontent.com/73006747/96578872-dfcb9e00-1310-11eb-9f23-35cabe3d01c1.png)
+![이벤트스토밍](https://user-images.githubusercontent.com/70302879/96742403-d409d580-13fd-11eb-98a8-f9f9e70276f0.jpg)
     
 
 ## 헥사고날 아키텍처 다이어그램 도출
@@ -206,13 +184,13 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
 ```
 - 적용 후 REST API 의 테스트
 ```
-# member 신규 가입
-http POST http://localhost:8081/members phoneNo=01012341234 nickname=TEST memberStatus=READY memberId=99
+# member 회원 가입
+http POST http://localhost:8081/members phoneNo=01100000000 nickname=TEST  memberId=99
 
-# member 회원 탈퇴처리
-http DELETE http://localhost:8081/members/2
+# member 회원 탈퇴
+http DELETE http://localhost:8081/members/1
 
-# point 정보 확인
+# point T멤버십 확인
 http GET http://localhost:8083/points/1 
 
 ```
@@ -220,8 +198,8 @@ http GET http://localhost:8083/points/1
 
 ## 폴리글랏 퍼시스턴스
 
-서비스 개발과 운영자들에게 익숙한 언어인 SQL을 사용하면서, 무료로 사용 가능한 RDB인 maria DB를 사용하기로 하였다. 
-이를 위해 aws의 RDS로 mariaDB를 생성하였고, application.yml 파일과 pom.xml에 maria DB관련 코드를 추가하였다.
+ maria DB 사용연결 aws RDS mariaDB 생성후,  application.yml / pom.xml  maria DB 정보 추가
+  auto_increment 속성을 사용 - GenerationType.IDENTITY 설정
 
 ```
 # Message.java
@@ -233,7 +211,7 @@ package mileage;
 public class Message {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY) // mariadb를 사용하여 db에서 auto_increment 속성을 사용하여 GenerationType.IDENTITY으로 설정
+    @GeneratedValue(strategy=GenerationType.IDENTITY) 
     private Long id;
     private Long memberId;
     private String phoneNo;
@@ -272,16 +250,7 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
     <scope>runtime</scope>
   </dependency>
 
-  <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-jdbc</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-test</artifactId>
-  </dependency>
-    
+     
 ```
 - AWS에 업로드된 mariaDB 접속 정보
 ![poly2](https://user-images.githubusercontent.com/73006747/96671984-20252d80-139e-11eb-9e13-a5586a5ac226.PNG)

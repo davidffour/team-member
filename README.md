@@ -53,11 +53,6 @@
 ## TO-BE 조직 (Vertically-Aligned)
  ![image](https://user-images.githubusercontent.com/73006747/96578301-ed345880-130f-11eb-86a3-a871164696f6.png)
 
-
-## Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과
-![image](https://user-images.githubusercontent.com/73006747/96578872-dfcb9e00-1310-11eb-9f23-35cabe3d01c1.png)
-
 ### 이벤트 도출
 
 ![image](https://user-images.githubusercontent.com/73006747/96578956-04277a80-1311-11eb-8f2a-edf946aafbe7.png)
@@ -104,6 +99,10 @@
     - 시나리오 중 
       회원은 포인트를 적립/사용이 가능하며, 잔여포인트가 관리된다. 이때, 회원상태가 정상인 경우만 적립/사용이 가능하다. (기능 누락) 
       → 변경 필요로 모델 
+      
+## Event Storming 결과
+* MSAEz 로 모델링한 이벤트스토밍 결과
+![image](https://user-images.githubusercontent.com/73006747/96578872-dfcb9e00-1310-11eb-9f23-35cabe3d01c1.png)
     
 
 ## 헥사고날 아키텍처 다이어그램 도출

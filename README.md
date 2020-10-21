@@ -768,7 +768,7 @@ Concurrency:		       96.02
 
 # 시나리오 수행 결과
 
-1. AWS 서비스 기동 확인
+* AWS 서비스 기동 확인
 
 ```
 root@labs--132893260:~# kubectl get all -n tutorial
@@ -806,4 +806,146 @@ replicaset.apps/siege-5c7c46b788     1         1         1       157m
 
 ```
 
+1. 회원은 핸드폰번호와 닉네임으로 회원가입이 가능하다.(회원가입 상태 : READY)
 
+```
+root@labs--132893260:~# http POST http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members phoneNo=01085581234 nickname=SEQ1 memberStatus=READY memberId=1
+
+HTTP/1.1 201 Created
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:06:50 GMT
+Location: http://member:8080/members/1
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "member": {
+            "href": "http://member:8080/members/1"
+        }, 
+        "self": {
+            "href": "http://member:8080/members/1"
+        }
+    }, 
+    "memberId": 1, 
+    "memberStatus": "READY", 
+    "nickname": "SEQ1", 
+    "phoneNo": "01085581234"
+}
+
+```
+
+2. 회원가입이 되면, 회원의 핸드폰번호로 알림메시지를 발송한다.
+가입시 핸드폰 번호가 11자리인 경우 정상으로 상태변경
+
+```
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members/1
+
+HTTP/1.1 200 OK
+Content-Type: application/hal+json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:07:02 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "member": {
+            "href": "http://member:8080/members/1"
+        }, 
+        "self": {
+            "href": "http://member:8080/members/1"
+        }
+    }, 
+    "memberId": 1, 
+    "memberStatus": "NORMAL", 
+    "nickname": "SEQ1", 
+    "phoneNo": "01085581234"
+}
+
+```
+회원상태가 정상인경우 포인트1000점을 생성한다.
+
+```
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/1
+
+HTTP/1.1 200 OK
+Content-Type: application/hal+json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:07:08 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/1"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/1"
+        }
+    }, 
+    "memberId": 1, 
+    "memberStatus": "NORMAL", 
+    "remainPoint": 1000, 
+    "requirePoint": null
+}
+
+```
+
+3. 회원은 포인트를 적립/사용이 가능하며, 잔여포인트가 관리된다. 이때, 회원상태가 정상인 경우만 적립/사용이 가능하다.
+
+```
+root@labs--132893260:~# http PATCH http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/1 requirePoint=530   
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:07:19 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/1"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/1"
+        }
+    }, 
+    "memberId": 1, 
+    "memberStatus": "NORMAL", 
+    "remainPoint": 1530, 
+    "requirePoint": 530
+}
+
+```
+-> 회원상태가 정상이며 530 포인트가 적립되었다.
+
+
+```
+root@labs--132893260:~# http PATCH http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/1 requirePoint=-730
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:07:25 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/1"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/1"
+        }
+    }, 
+    "memberId": 1, 
+    "memberStatus": "NORMAL", 
+    "remainPoint": 800, 
+    "requirePoint": -730
+}
+
+```
+-> 회원상태가 정상이며 730포인트가 사용되었다.
+
+
+4. 회원은 회원탈퇴가 가능하며, 탈퇴 전 보유 포인트는 소멸되어야 하며 회원의정보는 삭제된다.
+
+5. 
+
+6. 

@@ -233,7 +233,8 @@ http GET http://localhost:8083/points/1
 
 package mileage;
 
-@Document
+@Entity
+@Table(name="Message_table")
 public class Message {
 
     @Id

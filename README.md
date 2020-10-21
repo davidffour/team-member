@@ -287,7 +287,10 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
   </dependency>
     
 ```
+- AWS에 업로드된 mariaDB 접속 정보
 ![poly2](https://user-images.githubusercontent.com/73006747/96671984-20252d80-139e-11eb-9e13-a5586a5ac226.PNG)
+
+- AWS에 업로드된 mariaDB 내 데이터 확인
 ![poly](https://user-images.githubusercontent.com/73006747/96671982-1ef40080-139e-11eb-8d2a-af86576aad6c.PNG)
 
 ## 폴리글랏 프로그래밍

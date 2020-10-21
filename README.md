@@ -233,8 +233,7 @@ http GET http://localhost:8083/points/1
 
 package mileage;
 
-@Entity
-@Table(name="Message_table")
+@Document
 public class Message {
 
     @Id
@@ -553,7 +552,9 @@ siege -c3 -t10S -v --content-type "application/json" 'http://member:8080/members
 
 - Retry 의 설정 (istio)
 - Availability 가 높아진 것을 확인 (siege)
-
+```
+![image](https://user-images.githubusercontent.com/73006747/96673768-359c5680-13a2-11eb-898c-9f9666400ec5.png)
+```
 ### 오토스케일 아웃
 앞서 CB 는 시스템을 안정되게 운영할 수 있게 해줬지만 사용자의 요청을 100% 받아들여주지 못했기 때문에 이에 대한 보완책으로 자동화된 확장 기능을 적용하고자 한다. 
 

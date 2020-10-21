@@ -537,6 +537,7 @@ hystrix:
 ![image](https://user-images.githubusercontent.com/73006747/96666641-873ce500-1392-11eb-884e-3125036b2a43.png)
 ![image](https://user-images.githubusercontent.com/73006747/96666650-8c9a2f80-1392-11eb-8622-4181dd50608d.png)
 
+![image](https://user-images.githubusercontent.com/73006747/96666701-a471b380-1392-11eb-983d-f704a333807c.png)
 
 ```
 $ siege -c100 -t60S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"item": "chicken"}'

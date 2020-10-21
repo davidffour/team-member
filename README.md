@@ -55,10 +55,8 @@
 ![이벤트2](https://user-images.githubusercontent.com/70302879/96742411-d66c2f80-13fd-11eb-983c-cffdec288302.jpg)
 
 
-### 부적격 이벤트 탈락
-
-![이벤트3](https://user-images.githubusercontent.com/70302879/96742413-d79d5c80-13fd-11eb-8e5f-a491d0d5addf.jpg)
-
+### 필요이벤트 추출
+![이벤트3](https://user-images.githubusercontent.com/70302879/96743710-3dd6af00-13ff-11eb-8f25-5c3803d0263e.jpg)
 
     -과정 중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함 
       - 회원>회원정보 변경됨 : 회원상태 변경에 대한 시나리오가 분리되어 있고, 회원정보 변경에 대한 업무가 별도 존재하지 않아 제외
@@ -67,7 +65,7 @@
 
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증 및 수정
 
-![이벤트4](https://user-images.githubusercontent.com/70302879/96742416-d835f300-13fd-11eb-986b-e5d692c3cf07.jpg)
+![이벤트4](https://user-images.githubusercontent.com/70302879/96743715-3e6f4580-13ff-11eb-9a0b-91d8a2049141.jpg)
 
 
     - 시나리오 중 
@@ -82,7 +80,6 @@
 ## 헥사고날 아키텍처 다이어그램 도출
     
 ![image](https://user-images.githubusercontent.com/73006747/96580722-ad6f7000-1313-11eb-9d5c-2c81c49c6c97.png)
-
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함

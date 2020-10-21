@@ -604,8 +604,7 @@ HTTP/1.1 201     2.19 secs:     268 bytes ==> POST http://localhost:8080/members
 ```
 kubectl autoscale deploy point --min=1 --max=10 --cpu-percent=4
 ```
-
-
+![image](https://user-images.githubusercontent.com/73006747/96672038-434fdd00-139e-11eb-8962-c1d46814f24d.png)
 
 - CB 에서 했던 방식대로 워크로드를 걸어준다.
 ```
@@ -619,17 +618,6 @@ kubectl get deploy point -w -n tutorial
 
 ![image](https://user-images.githubusercontent.com/73006747/96671955-08e64000-139e-11eb-905d-6232daccfaab.png)
 
-- siege 의 로그를 보아도 전체적인 성공률이 높아진 것을 확인 할 수 있다. 
-```
-Transactions:		        5078 hits
-Availability:		       92.45 %
-Elapsed time:		       120 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
-```
 
 
 ## 무정지 재배포
@@ -638,17 +626,7 @@ Concurrency:		       96.02
 
 - seige 로 배포작업 직전에 워크로드를 모니터링 함.
 ```
-siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"item": "chicken"}'
-
-** SIEGE 4.0.5
-** Preparing 100 concurrent users for battle.
-The server is now under siege...
-
-HTTP/1.1 201     0.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-:
+$ siege -c3 -t10S -r10 --content-type "application/json" 'http://localhost:8080/members POST {"memberStatus": "READY"}',{"phoneNo": "01000000000"}',{"nickname": "A"}'
 
 ```
 
@@ -658,18 +636,10 @@ kubectl set image ...
 ```
 
 - seige 의 화면으로 넘어가서 Availability 가 100% 미만으로 떨어졌는지 확인
-```
-Transactions:		        3078 hits
-Availability:		       70.45 %
-Elapsed time:		       120 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
 
-```
-배포기간중 Availability 가 평소 100%에서 70% 대로 떨어지는 것을 확인. 원인은 쿠버네티스가 성급하게 새로 올려진 서비스를 READY 상태로 인식하여 서비스 유입을 진행한 것이기 때문. 이를 막기위해 Readiness Probe 를 설정함:
+![image](https://user-images.githubusercontent.com/73006747/96672363-0f28ec00-139f-11eb-8c71-5c919f3383ea.png)
+
+배포기간중 Availability 가 평소 100%에서 60% 대로 떨어지는 것을 확인. 원인은 쿠버네티스가 성급하게 새로 올려진 서비스를 READY 상태로 인식하여 서비스 유입을 진행한 것이기 때문. 이를 막기위해 Readiness Probe 를 설정함:
 
 ```
 # deployment.yaml 의 readiness probe 의 설정:
@@ -679,17 +649,9 @@ kubectl apply -f kubernetes/deployment.yaml
 ```
 
 - 동일한 시나리오로 재배포 한 후 Availability 확인:
-```
-Transactions:		        3078 hits
-Availability:		       100 %
-Elapsed time:		       120 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
 
-```
+![image](https://user-images.githubusercontent.com/73006747/96672395-28319d00-139f-11eb-9382-5720c9b258bf.png)
+
 
 배포기간 동안 Availability 가 변화없기 때문에 무정지 재배포가 성공한 것으로 확인됨.
 

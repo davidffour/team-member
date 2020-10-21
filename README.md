@@ -500,7 +500,7 @@ hystrix:
 
 
 ```
-$ siege -c3 -t10S -r10 --content-type "application/json" 'http://localhost:8080/members POST {"memberStatus": "READY"}',{"phoneNo": "01000000000"}',{"nickname": "A"}'
+$ siege -c3 -t10S -v --content-type "application/json" 'http://member:8080/members POST {"phoneNo": "01085580000", "nickname":"SEQ1" ,"memberStatus":"READY"}'
 
 ** SIEGE 4.0.5
 ** Preparing 100 concurrent users for battle.
@@ -543,6 +543,7 @@ HTTP/1.1 201     2.16 secs:     268 bytes ==> POST http://...:8080/members
 
 
 ```
+siege -c3 -t10S -v --content-type "application/json" 'http://member:8080/members POST {"phoneNo": "01085580000", "nickname":"SEQ1" ,"memberStatus":"READY"}'
 
 ![image](https://user-images.githubusercontent.com/73006747/96666641-873ce500-1392-11eb-884e-3125036b2a43.png)
 ![image](https://user-images.githubusercontent.com/73006747/96666650-8c9a2f80-1392-11eb-8622-4181dd50608d.png)
@@ -582,7 +583,7 @@ kubectl get deploy point -w -n tutorial
 
 - seige 로 배포작업 직전에 워크로드를 모니터링 함.
 ```
-$ siege -c3 -t10S -r10 --content-type "application/json" 'http://localhost:8080/members POST {"memberStatus": "READY"}',{"phoneNo": "01000000000"}',{"nickname": "A"}'
+$ siege -c3 -t100S -v --content-type "application/json" 'http://member:8080/members POST {"phoneNo": "01085580000", "nickname":"SEQ1" ,"memberStatus":"READY"}'
 
 ```
 

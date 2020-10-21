@@ -454,12 +454,6 @@ http http://localhost:8081/members     # 회원의 상태가 "NORMAL"로 확인
 
 # 운영
 
-## CI/CD 설정
-
-
-각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 GCP를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 cloudbuild.yml 에 포함되었다.
-
-
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
 * 서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함
@@ -515,8 +509,6 @@ The server is now under siege...
 HTTP/1.1 201     0.48 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     0.50 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     0.49 secs:     268 bytes ==> POST http://...:8080/members
-HTTP/1.1 201     0.51 secs:     268 bytes ==> POST http://...:8080/members
-HTTP/1.1 201     0.56 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     0.58 secs:     268 bytes ==> POST http://...:8080/members
 
 * 요청이 과도하여 CB를 동작함 요청을 차단
@@ -525,30 +517,24 @@ HTTP/1.1 500     0.62 secs:     249 bytes ==> POST http://...:8080/members
 HTTP/1.1 500     0.62 secs:     249 bytes ==> POST http://...:8080/members
 HTTP/1.1 500     0.61 secs:     249 bytes ==> POST http://...:8080/members
 HTTP/1.1 500     0.62 secs:     249 bytes ==> POST http://...:8080/members
-HTTP/1.1 500     0.62 secs:     249 bytes ==> POST http://...:8080/members
 
 * 요청을 어느정도 돌려보내고나니, 기존에 밀린 일들이 처리되었고, 회로를 닫아 요청을 다시 받기 시작
 
 HTTP/1.1 201     0.48 secs:     268 bytes ==> POST http://...:8080/members  
 HTTP/1.1 201     0.50 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     0.49 secs:     268 bytes ==> POST http://...:8080/members
-HTTP/1.1 201     0.51 secs:     268 bytes ==> POST http://...:8080/members
-HTTP/1.1 201     0.56 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     0.58 secs:     268 bytes ==> POST http://...:8080/members
 
 * 다시 요청이 쌓이기 시작하여 건당 처리시간이 증가 시작 => 회로 열기 => 요청 실패처리
 
 HTTP/1.1 500     0.62 secs:     249 bytes ==> POST http://...:8080/members   
 HTTP/1.1 500     0.62 secs:     249 bytes ==> POST http://...:8080/members
-HTTP/1.1 500     0.61 secs:     249 bytes ==> POST http://...:8080/members
 
 * 생각보다 빨리 상태 호전됨 - (건당 (쓰레드당) 처리시간이 회복) => 요청 수락
 
 HTTP/1.1 201     2.24 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     2.32 secs:     268 bytes ==> POST http://...:8080/members
 HTTP/1.1 201     2.16 secs:     268 bytes ==> POST http://...:8080/members
-HTTP/1.1 201     2.19 secs:     268 bytes ==> POST http://...:8080/members
-HTTP/1.1 201     2.19 secs:     268 bytes ==> POST http://...:8080/members
 
 
 

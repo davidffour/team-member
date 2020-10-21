@@ -584,9 +584,12 @@ HTTP/1.1 201     2.19 secs:     268 bytes ==> POST http://localhost:8080/members
 
 * 이후 이러한 패턴이 계속 반복되면서 시스템은 도미노 현상이나 자원 소모의 폭주 없이 잘 운영됨
 
+
+
+```
+
 ![image](https://user-images.githubusercontent.com/73006747/96666641-873ce500-1392-11eb-884e-3125036b2a43.png)
 ![image](https://user-images.githubusercontent.com/73006747/96666650-8c9a2f80-1392-11eb-8622-4181dd50608d.png)
-```
 
 - 운영시스템은 죽지 않고 지속적으로 CB 에 의하여 적절히 회로가 열림과 닫힘이 벌어지면서 자원을 보호하고 있음을 보여줌. 하지만, 64.71% 가 성공하였고, 36%가 실패했다는 것은 고객 사용성에 있어 좋지 않기 때문에 Retry 설정과 동적 Scale out (replica의 자동적 추가,HPA) 을 통하여 시스템을 확장 해주는 후속처리가 필요.
 

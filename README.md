@@ -1,5 +1,3 @@
-# member
-
 # Mileage 시스템
 
 핸드폰번호로 간단히 회원 가입하여 포인트를 적립/사용할 수 있는 멤버십 마일리지 시스템
@@ -289,41 +287,10 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
   </dependency>
     
 ```
+![poly2](https://user-images.githubusercontent.com/73006747/96671984-20252d80-139e-11eb-9e13-a5586a5ac226.PNG)
+![poly](https://user-images.githubusercontent.com/73006747/96671982-1ef40080-139e-11eb-8d2a-af86576aad6c.PNG)
 
 ## 폴리글랏 프로그래밍
-
-고객관리 서비스(customer)의 시나리오인 주문상태, 배달상태 변경에 따라 고객에게 카톡메시지 보내는 기능의 구현 파트는 해당 팀이 python 을 이용하여 구현하기로 하였다. 해당 파이썬 구현체는 각 이벤트를 수신하여 처리하는 Kafka consumer 로 구현되었고 코드는 다음과 같다:
-```
-from flask import Flask
-from redis import Redis, RedisError
-from kafka import KafkaConsumer
-import os
-import socket
-
-
-# To consume latest messages and auto-commit offsets
-consumer = KafkaConsumer('fooddelivery',
-                         group_id='',
-                         bootstrap_servers=['localhost:9092'])
-for message in consumer:
-    print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
-                                          message.offset, message.key,
-                                          message.value))
-
-    # 카톡호출 API
-```
-
-파이선 애플리케이션을 컴파일하고 실행하기 위한 도커파일은 아래와 같다 (운영단계에서 할일인가? 아니다 여기 까지가 개발자가 할일이다. Immutable Image):
-```
-FROM python:2.7-slim
-WORKDIR /app
-ADD . /app
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-ENV NAME World
-EXPOSE 8090
-CMD ["python", "policy-handler.py"]
-```
-
 
 ## 동기식 호출 과 Fallback 처리
 

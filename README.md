@@ -944,8 +944,303 @@ transfer-encoding: chunked
 -> 회원상태가 정상이며 730포인트가 사용되었다.
 
 
-4. 회원은 회원탈퇴가 가능하며, 탈퇴 전 보유 포인트는 소멸되어야 하며 회원의정보는 삭제된다.
+4. 회원은 회원탈퇴가 가능하며, 탈퇴 전 보유 포인트는 소멸되어야 하며 회원의 정보는 삭제된다.
 
-5. 
+```
+root@labs--132893260:~# http DELETE http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members/1
 
-6. 
+HTTP/1.1 204 No Content
+Date: Tue, 20 Oct 2020 15:08:35 GMT
+
+```
+회원과, 포인트에 대상이 없는걸 볼수있다.
+
+```
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members/1 
+
+HTTP/1.1 404 Not Found
+Date: Tue, 20 Oct 2020 15:08:52 GMT
+content-length: 0
+
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/1
+
+HTTP/1.1 404 Not Found
+Date: Tue, 20 Oct 2020 15:09:28 GMT
+content-length: 0
+
+```
+
+
+5. 알림메시지 발송이 실패하면 회원의 상태를 비정상으로 변경한다. 
+알림메시지는 회원 폰 번호의 정합성을 체크하여 상태를 변경한다.
+회원가입시 번호를 잘못입력한다.
+
+```
+root@labs--132893260:~# http POST http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members phoneNo=0108558 nickname=SEQ2 memberStatus=READY memberId=2
+
+HTTP/1.1 201 Created
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:09:56 GMT
+Location: http://member:8080/members/2
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "member": {
+            "href": "http://member:8080/members/2"
+        }, 
+        "self": {
+            "href": "http://member:8080/members/2"
+        }
+    }, 
+    "memberId": 2, 
+    "memberStatus": "READY", 
+    "nickname": "SEQ2", 
+    "phoneNo": "0108558"
+}
+
+```
+
+-> 회원상태조회 – ABNORMAL을 볼수있다.
+
+```
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members/2
+
+HTTP/1.1 200 OK
+Content-Type: application/hal+json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:10:04 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "member": {
+            "href": "http://member:8080/members/2"
+        }, 
+        "self": {
+            "href": "http://member:8080/members/2"
+        }
+    }, 
+    "memberId": 2, 
+    "memberStatus": "ABNORMAL", 
+    "nickname": "SEQ2", 
+    "phoneNo": "0108558"
+}
+
+```
+
+포인트에는 회원상태가 비정상이므로 가입시 포인트를 주지않는다.
+
+```
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/2
+
+HTTP/1.1 200 OK
+Content-Type: application/hal+json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:10:49 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/2"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/2"
+        }
+    }, 
+    "memberId": 2, 
+    "memberStatus": "ABNORMAL", 
+    "remainPoint": 0, 
+    "requirePoint": null
+}
+
+```
+
+비정상 가입된 회원이 포인트를 적립하려고하면 적립이 되지 않는다.
+
+```
+root@labs--132893260:~# http PATCH http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/2 requirePoint=100
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:11:01 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/2"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/2"
+        }
+    }, 
+    "memberId": 2, 
+    "memberStatus": "ABNORMAL", 
+    "remainPoint": 0, 
+    "requirePoint": 100
+}
+
+```
+
+비정상 가입된 회원이 포인트를 사용하려고하면 사용이 되지 않는다.
+
+```
+root@labs--132893260:~# http PATCH http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/2 requirePoint=-50
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:11:09 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/2"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/2"
+        }
+    }, 
+    "memberId": 2, 
+    "memberStatus": "ABNORMAL", 
+    "remainPoint": 0, 
+    "requirePoint": -50
+}
+
+```
+
+비정상 멤버를 삭제한다. 회원과 포인트에서 회원정보가 없다.
+
+```
+root@labs--132893260:~# http DELETE http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members/2
+
+HTTP/1.1 204 No Content
+Date: Tue, 20 Oct 2020 15:11:44 GMT
+
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members/2 
+
+HTTP/1.1 404 Not Found
+Date: Tue, 20 Oct 2020 15:11:55 GMT
+content-length: 0
+
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/2
+
+HTTP/1.1 404 Not Found
+Date: Tue, 20 Oct 2020 15:12:03 GMT
+content-length: 0
+
+```
+
+6. 마이페이지에서는 회원의 핸드폰번호/닉네임/잔여포인트가 조회 가능하다.
+신규회원을 가입시키고 마이페이지에서 회원정보를 조회한다.
+
+```
+root@labs--132893260:~# http POST http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/members phoneNo=01011223344 nickname=SEQ4 memberStatus=READY memberId=3
+
+HTTP/1.1 201 Created
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:12:10 GMT
+Location: http://member:8080/members/3
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "member": {
+            "href": "http://member:8080/members/3"
+        }, 
+        "self": {
+            "href": "http://member:8080/members/3"
+        }
+    }, 
+    "memberId": 3, 
+    "memberStatus": "READY", 
+    "nickname": "SEQ4", 
+    "phoneNo": "01011223344"
+}
+
+```
+
+마이페이지에서 정상가입된 회원의 상태와 포인트 정보를 볼수있다.
+
+```
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/mypages/3
+
+HTTP/1.1 200 OK
+Content-Type: application/hal+json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:12:16 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "mypage": {
+            "href": "http://mypage:8080/mypages/3"
+        }, 
+        "self": {
+            "href": "http://mypage:8080/mypages/3"
+        }
+    }, 
+    "memberId": 3, 
+    "memberStatus": "NORMAL", 
+    "nickname": "SEQ4", 
+    "phoneNo": "01011223344", 
+    "remainPoint": 1000
+}
+
+```
+
+신규회원의 포인트를 적립해본뒤 마이페이지에서 변경된 상태를 재확인한다.
+
+```
+root@labs--132893260:~# http PATCH http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/points/3 requirePoint=500
+
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:12:52 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "point": {
+            "href": "http://point:8080/points/3"
+        }, 
+        "self": {
+            "href": "http://point:8080/points/3"
+        }
+    }, 
+    "memberId": 3, 
+    "memberStatus": "NORMAL", 
+    "remainPoint": 1500, 
+    "requirePoint": 500
+}
+
+
+root@labs--132893260:~# http GET http://a581985ad3ce74724b22d67aa2a393da-1904051125.ap-southeast-2.elb.amazonaws.com:8080/mypages/3
+
+HTTP/1.1 200 OK
+Content-Type: application/hal+json;charset=UTF-8
+Date: Tue, 20 Oct 2020 15:12:57 GMT
+transfer-encoding: chunked
+
+{
+    "_links": {
+        "mypage": {
+            "href": "http://mypage:8080/mypages/3"
+        }, 
+        "self": {
+            "href": "http://mypage:8080/mypages/3"
+        }
+    }, 
+    "memberId": 3, 
+    "memberStatus": "NORMAL", 
+    "nickname": "SEQ4", 
+    "phoneNo": "01011223344", 
+    "remainPoint": 1500
+}
+root@labs--132893260:~#
+'''
+
+
+
+
+
+
